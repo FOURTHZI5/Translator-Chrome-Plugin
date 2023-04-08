@@ -14,9 +14,20 @@ chrome.contextMenus.create({
   contexts: ["selection"],
 });
 
-chrome.contextMenus.onClicked.addListener(async (info) => {
-  console.log("Info", info)
+chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   if (info.menuItemId === "selectedText") {
+    // chrome.scripting.executeScript({
+    //   target: {tabId: tab.id},
+    //   func: () => {
+    //     const selection = window.getSelection();
+    //     const range = selection.getRangeAt(0);
+    //     range.deleteContents();
+    //     range.insertNode(document.createTextNode("Hello World"));
+    //     selection.removeAllRanges();
+    //     selection.addRange(range);
+    //   }
+    // });
+
     const selectedText = info.selectionText;
     const translatedText = await translateText(selectedText);
   }
@@ -48,6 +59,6 @@ async function translateText(text, language = "Chinese") {
       return "Translation failed. Please try again.";
     }
   } catch (error) {
-    console.log("Error:", error);
+    console.log("Failed to query the openAI, find error:", error);
   }
 }
