@@ -11,22 +11,18 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
       text: info.selectionText,
     });
     console.log("Received translatedText:", response.translatedText);
-    const translatedText = response.translatedText;
+    let translatedText = response.translatedText;
+
+    // Remove leading and trailing newlines
+    if (translatedText.startsWith("\n")) {
+      translatedText = translatedText.slice(1);
+    }
+    if (translatedText.endsWith("\n")) {
+      translatedText = translatedText.slice(0, -1);
+    }
 
     if (translatedText !== undefined) {
-      chrome.scripting.executeScript({
-        target: { tabId: tab.id },
-        func: (translatedText) => {
-          const selection = window.getSelection();
-          const range = selection.getRangeAt(0);
-          range.deleteContents();
-          range.insertNode(document.createTextNode(translatedText));
-          console.log("Injected translatedText", translatedText);
-          selection.removeAllRanges();
-          selection.addRange(range);
-        },
-        args: [translatedText],
-      });
+      injectTranslatedText(tab.id, translatedText);
     }
   }
 });
@@ -34,5 +30,21 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
 function sendMessagePromise(tabId, message) {
   return new Promise((resolve) => {
     chrome.tabs.sendMessage(tabId, message, resolve);
+  });
+}
+
+function injectTranslatedText(tabId, translatedText) {
+  chrome.scripting.executeScript({
+    target: { tabId: tabId },
+    func: (translatedText) => {
+      const selection = window.getSelection();
+      const range = selection.getRangeAt(0);
+      range.deleteContents();
+      range.insertNode(document.createTextNode(translatedText));
+      console.log("Injected translatedText", translatedText);
+      selection.removeAllRanges();
+      selection.addRange(range);
+    },
+    args: [translatedText],
   });
 }

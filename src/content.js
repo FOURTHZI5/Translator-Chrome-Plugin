@@ -27,7 +27,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 });
 
 async function translateText(text, language = "Chinese") {
-  const prompt = `Translate this into ${language}:\n\n${text}\n\n`;
+  const prompt = `Translate the following text into ${language}, keep the format:\n---------------------------\n\n${text}`;
 
   console.log("prompt", prompt);
 
