@@ -8,7 +8,7 @@ module.exports = {
   mode: 'production',
   entry: {
     background: './src/background.js',
-    contentScript: './src/content.js'
+    contentScript: './src/contentScript.js'
   },
   output: {
     filename: '[name].js',
@@ -18,5 +18,10 @@ module.exports = {
     new webpack.DefinePlugin({
       'openAI_API_KEY': JSON.stringify(env.openAI_API_KEY),
     })
-  ]
+  ],
+  resolve: {
+    alias: {
+      browser: require.resolve("browser"),
+    },
+  },
 };
