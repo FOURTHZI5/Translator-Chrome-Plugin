@@ -34,11 +34,11 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
       arrow.className = "arrow";
       tooltip.appendChild(arrow);
 
-      referenceElement.appendChild(tooltip);
+      document.body.appendChild(tooltip);
 
       document.addEventListener("click", function(event) {
-        if (!tooltip.contains(event.target)) {
-          referenceElement.removeChild(tooltip);
+        if (tooltip.parentNode && !tooltip.contains(event.target)) {
+          tooltip.parentNode.removeChild(tooltip);
         }
       });
 
