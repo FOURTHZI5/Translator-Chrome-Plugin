@@ -5,27 +5,26 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
     console.log("create the popup window");
     const range = window.getSelection().getRangeAt(0);
     const rect = range.getBoundingClientRect();
-    var popup = document.createElement('div');
-    popup.innerHTML = '...';
-    popup.classList.add('popup');
+    var popup = document.createElement("div");
+    popup.innerHTML = "...";
+    popup.classList.add("popup");
     const width = rect.right - rect.left;
     console.log(rect.right, rect.left);
     console.log("width: " + width);
-    popup.style.maxWidth = (width * 1.25) + 'px';
-    popup.style.top = (rect.bottom + 8) + 'px';
-    popup.style.left = (rect.left + width / 2) + 'px';
-    console.log("append the poppup window")
+    popup.style.maxWidth = width * 1.25 + "px";
+    popup.style.top = rect.bottom + 8 + "px";
+    popup.style.left = rect.left + width / 2 + "px";
+    popup.style.marginLeft = -width / 2 + "px";
+    console.log("append the poppup window");
     document.body.appendChild(popup);
 
-    const clickListener = function(event) {
+    document.addEventListener("click", (event) => {
       if (popup.parentNode && !popup.contains(event.target)) {
         popup.parentNode.removeChild(popup);
         // Remove the listener when the user clicks
         document.removeEventListener("click", clickListener);
       }
-    };
-
-    document.addEventListener("click", clickListener);
+    });
 
     try {
       await handleTranslatedText(request.text, "Chinese", (data) => {
@@ -41,7 +40,11 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
   }
 });
 
-async function handleTranslatedText(text, language = "Chinese", onDataReceived) {
+async function handleTranslatedText(
+  text,
+  language = "Chinese",
+  onDataReceived
+) {
   const translation = translateText(text, language);
 
   let data = "";
@@ -80,10 +83,10 @@ async function* translateText(text, language) {
   for await (const chunk of response.data) {
     data += chunk;
 
-    if (chunk === '\n') {
+    if (chunk === "\n") {
       data = data.trim();
 
-      if (data.endsWith('data: [DONE]')) {
+      if (data.endsWith("data: [DONE]")) {
         break;
       }
 
