@@ -1,48 +1,34 @@
-.tooltip {
+.popup{
+  min-width: 40px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 8px 8px;
   position: absolute;
-  background: #ffffff;
-  color: #643045;
-  font-weight: bold;
-  padding: 5px 10px;
-  font-size: 13px;
-  border-radius: 4px;
-  border: 1px solid #000000;
+  z-index: 1;
+  -webkit-animation: fadeIn 1s;
+  animation: fadeIn 1s;
 }
 
-.arrow,
-.arrow::before {
+/* Popup arrow */
+.popup::after {
+  content: "";
   position: absolute;
-  width: 8px;
-  height: 8px;
-  background: inherit;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
   border-style: solid;
-  border-width: 1px 0 0 1px;
-  border-color: black transparent transparent black;
-  top: -1px;
+  border-color: transparent transparent #555 transparent;
 }
 
-.arrow {
-  visibility: hidden;
+@-webkit-keyframes fadeIn {
+  from {opacity: 0;} 
+  to {opacity: 1;}
 }
 
-.arrow::before {
-  visibility: visible;
-  content: '';
-  transform: rotate(45deg);
-}
-
-.tooltip[data-popper-placement^='top'] > .arrow {
-  bottom: -4px;
-}
-
-.tooltip[data-popper-placement^='bottom'] > .arrow {
-  top: -4px;
-}
-
-.tooltip[data-popper-placement^='left'] > .arrow {
-  right: -4px;
-}
-
-.tooltip[data-popper-placement^='right'] > .arrow {
-  left: -4px;
+@keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity:1 ;}
 }

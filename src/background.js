@@ -2,7 +2,7 @@ const { createPopper } = require('@popperjs/core');
 
 chrome.contextMenus.create({
   id: "selectedText",
-  title: "中文 '%s'",
+  title: "中文 \"%s\"",
   contexts: ["selection"],
 });
 
