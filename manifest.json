@@ -1,11 +1,20 @@
 {
   "manifest_version": 3,
-  "name": "English to Chinese Translator",
+  "name": "English to Chinese (ChatGPT 翻译器)",
   "version": "1.0",
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    },
+    "default_title": "ChatGPT 翻译", 
+    "default_popup": "src/popup.html"
   },
   "permissions": [
     "activeTab",
@@ -13,7 +22,8 @@
     "clipboardRead",
     "contextMenus",
     "scripting",
-    "tabs"
+    "tabs",
+    "storage"
   ],
   "background": {
     "service_worker": "dist/background.js"

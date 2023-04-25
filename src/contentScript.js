@@ -9,25 +9,26 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
     popup.innerHTML = "...";
     popup.classList.add("popup");
     const width = rect.right - rect.left;
-    console.log(rect.right, rect.left);
-    console.log("width: " + width);
+    // console.log(rect.right, rect.left);
+    // console.log("width: " + width);
     popup.style.maxWidth = width * 1.25 + "px";
-    popup.style.top = rect.bottom + 8 + "px";
     popup.style.left = rect.left + width / 2 + "px";
+    popup.style.top = rect.bottom + 8 + window.scrollY + "px";
     popup.style.marginLeft = -width / 2 + "px";
-    console.log("append the poppup window");
+    // console.log("append the poppup window");
     document.body.appendChild(popup);
 
-    document.addEventListener("click", (event) => {
+    const clickListener = (event) => {
       if (popup.parentNode && !popup.contains(event.target)) {
         popup.parentNode.removeChild(popup);
-        // Remove the listener when the user clicks
         document.removeEventListener("click", clickListener);
       }
-    });
+    };
+
+    document.addEventListener("click", clickListener);
 
     try {
-      await handleTranslatedText(request.text, "Chinese", (data) => {
+      await handleTranslatedText(request.text, request.apiKey ,"Chinese", (data) => {
         popup.innerHTML = data;
       });
       console.log("Translation completed");
@@ -42,26 +43,27 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
 
 async function handleTranslatedText(
   text,
+  apiKey,
   language = "Chinese",
   onDataReceived
 ) {
-  const translation = translateText(text, language);
+  const translation = translateText(text, apiKey, language);
 
   let data = "";
   for await (const chunk of translation) {
     data += chunk;
     onDataReceived(data);
   }
-  console.log(data);
+  // console.log(data);
   return data;
 }
 
-async function* translateText(text, language) {
+async function* translateText(text, apiKey, language) {
   const prompt = `Translate the following text into ${language}, keep the format:\n---------------------------\n\n${text}`;
 
   const headers = {
     "Content-Type": "application/json",
-    Authorization: `Bearer ${openAI_API_KEY}`,
+    Authorization: `Bearer ${apiKey}`,
   };
 
   const requestBody = JSON.stringify({
@@ -91,7 +93,7 @@ async function* translateText(text, language) {
       }
 
       if (data) {
-        console.log(data);
+        // console.log(data);
         const jsonObject = JSON.parse(data.substring(6));
         const processedData = jsonObject.choices[0]?.text;
 
